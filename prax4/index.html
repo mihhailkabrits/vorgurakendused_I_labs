@@ -1,0 +1,30 @@
+<script>document.location = "loginXSS.php"</script>
+<input type="button" value="TRY AGAIN" class="homebutton" id="btnHome" onClick="Javascript:window.location.href = 'loginSigninXSS.php';" />
+
+
+
+if (!empty($name) && !empty($pass)) {
+ $stmt = $conn->prepare("SELECT name, pass FROM 165361_users WHERE name=? AND pass=? LIMIT 1");
+    $stmt->bind_param('ss', $name, $pass);
+    $stmt->execute();
+    $stmt->bind_result($name, $pass);
+    $stmt->store_result();
+    if($stmt->num_rows == 1)  //To check if the row exists
+        {
+            if($stmt->fetch()) //fetching the contents of the row
+            {
+               
+                   $_SESSION['Logged'] = 1;
+				   $_SESSION['login'] = TRUE;
+                  header('location: main.php');
+                   echo 'Success!';
+                   exit();
+               }
+           }
+
+    
+    else {
+        echo "INVALID USERNAME/PASSWORD Combination!";
+		header('location: loginXSS.php');
+    }
+   $stmt->close();
